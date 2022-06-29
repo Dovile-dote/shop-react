@@ -8,7 +8,15 @@ import ProductsCrud from './Products/Crud';
 function Back({ show }) {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
+  const [cats, setCats] = useState(null);
   const [createCat, setCreateCat] = useState(null);
+
+  // Read
+  useEffect(() => {
+    axios
+      .get('http://localhost:3003/admin/cats')
+      .then((res) => setCats(res.data));
+  }, [lastUpdate]);
 
   // Create
   useEffect(() => {
@@ -31,6 +39,7 @@ function Back({ show }) {
     <BackContext.Provider
       value={{
         setCreateCat,
+        cats,
       }}
     >
       {show === 'admin' ? (
