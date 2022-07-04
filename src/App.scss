@@ -118,11 +118,31 @@ body {
 
 .show-message {
     display: flex;
-    position: fixed;
+    position: absolute;
+    flex-direction: column;
     bottom: 50px;
-    right: 50px;
+    right: 0px;
     width: 100%;
     justify-content: flex-end;
+    align-items: flex-end;
+    z-index: 2;
+
+    .alert-danger {
+        background-color: #f8d7daac;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1c2;
+    }
+
+    .alert-success {
+        background-color: #d4eddac2;
+    }
+
+    div {
+        width: 50%;
+        margin-right: 30px;
+    }
 }
 
 button.with-loader {
