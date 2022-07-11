@@ -1,30 +1,49 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import BackContext from '../BackContext';
+import getBase64 from '../../../Functions/getBase64';
 
 function Create() {
-  const { cats, setCreateProduct } = useContext(BackContext);
+  const { cats, setCreateProduct, showMessage } = useContext(BackContext);
 
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [inStock, setInStock] = useState(false);
   const [cat, setCat] = useState('0');
+  const fileInput = useRef();
+
+  const [photoPrint, setPhotoPrint] = useState(null);
+
+  const doPhoto = () => {
+    getBase64(fileInput.current.files[0])
+      .then((photo) => setPhotoPrint(photo))
+      .catch((_) => {
+        // tylim
+      });
+  };
 
   const handleCreate = () => {
+    if (cat === '0') {
+      showMessage({ text: 'Please, select cat!', type: 'danger' });
+      return;
+    }
     const data = {
       title,
       price: parseFloat(price),
       inStock: inStock ? 1 : 0,
       cat: parseInt(cat),
+      photo: photoPrint,
     };
     setCreateProduct(data);
     setTitle('');
     setPrice('');
     setInStock(false);
     setCat('0');
+    setPhotoPrint(null);
+    fileInput.current.value = null;
   };
 
   return (
-    <div className="card mt-4">
+    <div className="card">
       <div className="card-header">
         <h2>Create new Product</h2>
       </div>
@@ -81,6 +100,21 @@ function Create() {
           </select>
           <small className="form-text text-muted">Select category here.</small>
         </div>
+        <div className="form-group">
+          <label>Photo</label>
+          <input
+            ref={fileInput}
+            type="file"
+            className="form-control"
+            onChange={doPhoto}
+          />
+          <small className="form-text text-muted">Upload photo</small>
+        </div>
+        {photoPrint ? (
+          <div className="photo-bin">
+            <img src={photoPrint} alt="img" />
+          </div>
+        ) : null}
         <button className="btn btn-outline-primary" onClick={handleCreate}>
           Create
         </button>

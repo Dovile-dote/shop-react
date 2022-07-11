@@ -5,6 +5,7 @@ import CatsCrud from './Cats/Crud';
 import Nav from './Nav';
 import ProductsCrud from './Products/Crud';
 import { v4 as uuidv4 } from 'uuid';
+import { authConfig } from '../../Functions/auth';
 
 function Back({ show }) {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
@@ -18,19 +19,31 @@ function Back({ show }) {
   const [modalCat, setModalCat] = useState(null);
 
   const [createProduct, setCreateProduct] = useState(null);
+  const [products, setProducts] = useState(null);
+  const [deleteProduct, setDeleteProduct] = useState(null);
+  const [editProduct, setEditProduct] = useState(null);
+  const [modalProduct, setModalProduct] = useState(null);
+  const [deletePhoto, setDeletePhoto] = useState(null);
 
-  // Read
+  // Read categories
   useEffect(() => {
     axios
-      .get('http://localhost:3003/admin/cats')
+      .get('http://localhost:3003/admin/cats', authConfig())
       .then((res) => setCats(res.data));
   }, [lastUpdate]);
 
-  // Create
+  // Read products
+  useEffect(() => {
+    axios
+      .get('http://localhost:3003/admin/products', authConfig())
+      .then((res) => setProducts(res.data));
+  }, [lastUpdate]);
+
+  // Create categories
   useEffect(() => {
     if (null === createCat) return;
     axios
-      .post('http://localhost:3003/admin/cats', createCat)
+      .post('http://localhost:3003/admin/cats', createCat, authConfig())
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -40,11 +53,12 @@ function Back({ show }) {
         showMessage({ text: error.message, type: 'danger' });
       });
   }, [createCat]);
+
   // Create product
   useEffect(() => {
     if (null === createProduct) return;
     axios
-      .post('http://localhost:3003/admin/products', createProduct)
+      .post('http://localhost:3003/admin/products', createProduct, authConfig())
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -54,11 +68,12 @@ function Back({ show }) {
         showMessage({ text: error.message, type: 'danger' });
       });
   }, [createProduct]);
-  // Delete
+
+  // Delete categories
   useEffect(() => {
     if (null === deleteCat) return;
     axios
-      .delete('http://localhost:3003/admin/cats/' + deleteCat.id)
+      .delete('http://localhost:3003/admin/cats/' + deleteCat.id, authConfig())
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -69,11 +84,51 @@ function Back({ show }) {
       });
   }, [deleteCat]);
 
+  // Delete products
+  useEffect(() => {
+    if (null === deleteProduct) return;
+    axios
+      .delete(
+        'http://localhost:3003/admin/products/' + deleteProduct.id,
+        authConfig()
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      })
+      // gaudo .catch errorus
+      .catch((error) => {
+        showMessage({ text: error.message, type: 'danger' });
+      });
+  }, [deleteProduct]);
+
+  // Delete photo
+  useEffect(() => {
+    if (null === deletePhoto) return;
+    axios
+      .delete(
+        'http://localhost:3003/admin/photos/' + deletePhoto.id,
+        authConfig()
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        // setLastUpdate(Date.now());
+      })
+      // gaudo .catch errorus
+      .catch((error) => {
+        showMessage({ text: error.message, type: 'danger' });
+      });
+  }, [deletePhoto]);
+
   // Edit
   useEffect(() => {
     if (null === editCat) return;
     axios
-      .put('http://localhost:3003/admin/cats/' + editCat.id, editCat)
+      .put(
+        'http://localhost:3003/admin/cats/' + editCat.id,
+        editCat,
+        authConfig()
+      )
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -83,6 +138,25 @@ function Back({ show }) {
         showMessage({ text: error.message, type: 'danger' });
       });
   }, [editCat]);
+
+  // Edit
+  useEffect(() => {
+    if (null === editProduct) return;
+    axios
+      .put(
+        'http://localhost:3003/admin/products/' + editProduct.id,
+        editProduct,
+        authConfig()
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      })
+      // gaudo .catch errorus
+      .catch((error) => {
+        showMessage({ text: error.message, type: 'danger' });
+      });
+  }, [editProduct]);
 
   const showMessage = (m) => {
     const id = uuidv4();
@@ -104,6 +178,13 @@ function Back({ show }) {
         setModalCat,
         modalCat,
         setCreateProduct,
+        products,
+        showMessage,
+        setDeleteProduct,
+        setEditProduct,
+        setModalProduct,
+        modalProduct,
+        setDeletePhoto,
       }}
     >
       {show === 'admin' ? (

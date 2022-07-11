@@ -19,7 +19,22 @@ body {
             display: flex;
             align-items: center;
             justify-content: flex-start;
+
             // background-color: aqua;
+            .box {
+                width: 15px;
+                height: 15px;
+                border: 1px solid coral;
+                border-radius: 4px;
+                margin: 0 10px;
+            }
+
+            .cat {
+                font-size: 75%;
+                color: skyblue;
+                text-decoration: underline;
+                margin-left: 40px;
+            }
         }
 
         .nest-content {
@@ -154,5 +169,17 @@ button.with-loader {
 button.with-loader:disabled {
     .spinner-border {
         display: inline-block;
+    }
+}
+
+.photo-bin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+
+    img {
+        width: 100%;
+        height: auto;
     }
 }
