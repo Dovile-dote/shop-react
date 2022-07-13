@@ -51,6 +51,14 @@ function App() {
             </RequireAuth>
           }
         />
+        <Route
+          path="/admin/comments"
+          element={
+            <RequireAuth role="admin">
+              <Back show="com" />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
@@ -69,22 +77,6 @@ function RequireAuth({ children, role }) {
           setView(<Navigate to="/login" replace />);
         }
       });
-  }, [children]);
-
-  return view;
-}
-
-function RequireAuthAdmin({ children }) {
-  const [view, setView] = useState(<h2>Please wait...</h2>);
-
-  useEffect(() => {
-    axios.get('http://localhost:3003/login-check', authConfig()).then((res) => {
-      if ('ok' === res.data.msg) {
-        setView(children);
-      } else {
-        setView(<Navigate to="/login" replace />);
-      }
-    });
   }, [children]);
 
   return view;

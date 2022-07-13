@@ -1,10 +1,14 @@
-function Nav() {
+import Nav from '../Nav';
+import List from './List';
+
+function Crud() {
   return (
     <>
+      <Nav />
       <div className="container">
         <div className="row">
           <div className="col-12">
-            <nav className="nav">Willkomme. Ja ja das ist gut</nav>
+            <List />
           </div>
         </div>
       </div>
@@ -12,4 +16,4 @@ function Nav() {
   );
 }
 
-export default Nav;
+export default Crud;

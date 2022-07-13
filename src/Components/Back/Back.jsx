@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import BackContext from './BackContext';
 import CatsCrud from './Cats/Crud';
+import ComCrud from './Com/Crud';
 import Nav from './Nav';
 import ProductsCrud from './Products/Crud';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,6 +25,8 @@ function Back({ show }) {
   const [editProduct, setEditProduct] = useState(null);
   const [modalProduct, setModalProduct] = useState(null);
   const [deletePhoto, setDeletePhoto] = useState(null);
+  const [comments, setComments] = useState(null);
+  const [deleteCom, setDeleteCom] = useState(null);
 
   // Read categories
   useEffect(() => {
@@ -37,6 +40,13 @@ function Back({ show }) {
     axios
       .get('http://localhost:3003/admin/products', authConfig())
       .then((res) => setProducts(res.data));
+  }, [lastUpdate]);
+
+  // Read comments
+  useEffect(() => {
+    axios
+      .get('http://localhost:3003/admin/comments', authConfig())
+      .then((res) => setComments(res.data));
   }, [lastUpdate]);
 
   // Create categories
@@ -120,6 +130,23 @@ function Back({ show }) {
       });
   }, [deletePhoto]);
 
+  // Delete photo
+  useEffect(() => {
+    if (null === deleteCom) return;
+    axios
+      .delete(
+        'http://localhost:3003/admin/comments/' + deleteCom.id,
+        authConfig()
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      })
+      // gaudo .catch errorus
+      .catch((error) => {
+        showMessage({ text: error.message, type: 'danger' });
+      });
+  }, [deleteCom]);
   // Edit
   useEffect(() => {
     if (null === editCat) return;
@@ -185,6 +212,8 @@ function Back({ show }) {
         setModalProduct,
         modalProduct,
         setDeletePhoto,
+        setDeleteCom,
+        comments,
       }}
     >
       {show === 'admin' ? (
@@ -196,6 +225,8 @@ function Back({ show }) {
         <CatsCrud />
       ) : show === 'products' ? (
         <ProductsCrud />
+      ) : show === 'com' ? (
+        <ComCrud />
       ) : null}
     </BackContext.Provider>
   );
